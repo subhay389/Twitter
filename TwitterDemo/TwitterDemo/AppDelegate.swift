@@ -45,33 +45,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
         print(url.description)
         
-        let requestToken = BDBOAuth1Credential(queryString: url.query)
-        let twitterClient = BDBOAuth1SessionManager(baseURL: NSURL(string: "https://api.twitter.com")! as URL!, consumerKey: "7TqnAWuOMnQg29w111JZeCQP1", consumerSecret: "g3vBy3lm4noXJBQPzVw3Tn1hTWYqYFxeyJ0tzVInJ84YalSmCJ")
-
-        twitterClient?.fetchAccessToken(withPath: "oauth/access_token", method: "POST", requestToken: requestToken, success: { (accessToken: BDBOAuth1Credential?) -> Void in
-            print("I got a access token")
-            
-            twitterClient?.get("1.1/account/verify_credentials.json", parameters: nil, progress: nil, success: { (task: URLSessionDataTask, response: Any?) -> Void in
-                //print("account: \(response)")
-                let user = response as! NSDictionary
-                print("name: \(user["name"])")
-            }, failure: { (task: URLSessionDataTask?, error: Error) -> Void in
-                print("error \(error.localizedDescription)")
-            })
-            
-            twitterClient?.get("1.1/statuses/home_timeline.json", parameters: nil, progress: nil,
-                success: { (task: URLSessionDataTask, response: Any?) -> Void in
-                let tweets = response as! [NSDictionary]
-                    for tweet in tweets{
-                        print ("tweets: \(tweet["text"])")
-                    }
-            }, failure: { (task: URLSessionDataTask?, error: Error) in
-                print("error \(error.localizedDescription)")
-            })
-            
-        }, failure: { (error: Error?) -> Void in
-            print("error \(error?.localizedDescription)")
-        })
+        
+        let client = TwitterClient.sharedInstance
+        
+        client?.handleOpenUrl(url: url as NSURL)
         
         return true
     }
