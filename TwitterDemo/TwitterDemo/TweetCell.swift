@@ -27,15 +27,11 @@ class TweetCell: UITableViewCell {
     var tweet: Tweet!{
         didSet{
             
-            tweetDetailLabel.text = tweet.text as? String
-            tweetTitleLabel.text = tweet.userName as! String
-            
-            let imageURL = URL(string: tweet.imageUrl as! String)
-            profileImage.setImageWith(imageURL! as URL)
-            timestampLabel.text = TwitterClient.changeTimeStampFormatToString(timestamp: tweet.timestamp as! Date)
-            
-            retweetLabel.text = tweet.retweetCountString
-            favouriteLabel.text = tweet.favCountString
+//            tweetDetailLabel.text = tweet.text as? String
+//            tweetTitleLabel.text = tweet.userName as! String
+//            
+//            retweetLabel.text = tweet.retweetCountString
+//            favouriteLabel.text = tweet.favCountString
             
             if (!tweet.reTweet!) {
                 retweetButton.setImage(UIImage(named: "retweet-icon"), for: .normal)
@@ -52,7 +48,37 @@ class TweetCell: UITableViewCell {
             
         }
     }
+    @IBAction func onRetweet(_ sender: Any) {
+        tweet.reTweet! = !tweet.reTweet!
+        if (self.tweet.reTweet!) {
+            
+            self.tweet.retweetCount += 1
+            retweetButton.setImage(UIImage(named: "retweet-icon-green"), for: .normal)
+        } else {
+            self.tweet.retweetCount -= 1
+            retweetButton.setImage(UIImage(named: "retweet-icon"), for: .normal)
+        }
+        
+        self.tweet.retweetCountString = "\(self.tweet.retweetCount)"
+        retweetLabel.text = self.tweet.retweetCountString
+
+    }
     
+    @IBAction func onFavPressed(_ sender: Any) {
+        self.tweet.favTweet = !self.tweet.favTweet!
+        
+        if (self.tweet.favTweet!) {
+            self.tweet.favCount += 1
+            favTweet.setImage(UIImage(named: "favor-icon-red"), for: .normal)
+        } else {
+            self.tweet.favCount -= 1
+            favTweet.setImage(UIImage(named: "favor-icon"), for: .normal)
+        }
+        
+        self.tweet.favCountString = "\(self.tweet.favCount)"
+        favouriteLabel.text = self.tweet.favCountString
+
+    }
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

@@ -119,11 +119,17 @@
                                                     <rect key="frame" x="140" y="133" width="26" height="24"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal" title="B" image="retweet-icon"/>
+                                                    <connections>
+                                                        <action selector="onRetweet:" destination="MLI-o3-7s9" eventType="touchUpInside" id="Ya0-Hc-HSM"/>
+                                                    </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CsJ-Iv-bUF">
                                                     <rect key="frame" x="236" y="133" width="27" height="24"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <state key="normal" title="B" image="favor-icon"/>
+                                                    <connections>
+                                                        <action selector="onFavPressed:" destination="MLI-o3-7s9" eventType="touchUpInside" id="5Yt-GD-1yl"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <constraints>
