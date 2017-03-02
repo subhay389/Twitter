@@ -12,6 +12,10 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     
     @IBOutlet weak var tableView: UITableView!
 
+    @IBAction func onLogoutButton(_ sender: Any) {
+        TwitterClient.sharedInstance?.logout()
+        
+    }
     var tweets: [Tweet]!
     
     override func viewDidLoad() {
@@ -54,8 +58,11 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         cell.tweetTitleLabel.text = eachTweet.userName as! String
         let imageURL = URL(string: eachTweet.photoUrl as! String)
         cell.photoLabel?.setImageWith(imageURL!)
-        cell.favouriteLabel.text = eachTweet.favoritesCount!
-        cell.retweetLabel.text = eachTweet.retweetCount!
+        cell.favouriteLabel.text = String(eachTweet.favoritesCount)
+        cell.retweetLabel.text = String(eachTweet.retweetCount)
+        cell.dateLabel.text = String(describing: eachTweet.timestamp!)
+        
+        cell.tweet = eachTweet
 
         return cell
     }

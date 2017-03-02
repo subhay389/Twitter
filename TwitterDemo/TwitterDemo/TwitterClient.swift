@@ -11,6 +11,8 @@ import BDBOAuth1Manager
 
 class TwitterClient: BDBOAuth1SessionManager {
     
+
+    
     static let sharedInstance = TwitterClient(baseURL: NSURL(string: "https://api.twitter.com")! as URL!, consumerKey: "7TqnAWuOMnQg29w111JZeCQP1", consumerSecret: "g3vBy3lm4noXJBQPzVw3Tn1hTWYqYFxeyJ0tzVInJ84YalSmCJ")
     
     var loginSuccess: (() -> ())?
@@ -73,22 +75,41 @@ class TwitterClient: BDBOAuth1SessionManager {
         fetchAccessToken(withPath: "oauth/access_token", method: "POST", requestToken: requestToken, success: { (accessToken: BDBOAuth1Credential?) -> Void in
             print("I got a access token")
             
-            self.loginSuccess?()
-//            client?.homeTimeLine(success: { (tweets: [Tweet]) in
-//                for tweet in tweets{
-//                    print(tweet.text)
-//                }
-//            }, failure: { (error: NSError) in
-//                print(error.localizedDescription)
-//            })
+            self.currentAccount(success: { (user: User) in
+                User.currentUser = user
+                self.loginSuccess?()
+            }, failure: { (error: NSError) in
+                self.loginFailure?(error as! NSError)
+            })
             
-//            client?.currentAccount()
-            
-            
+
             
         }, failure: { (error: Error?) -> Void in
             print("error \(error?.localizedDescription)")
             self.loginFailure?(error as! NSError)
         })
     }
+    
+    
+    func logout() {
+        User.currentUser = nil
+        deauthorize()
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: User.userDidLogoutNotification), object: nil)
+        
+    }
+    
+    func currentAccount(success: @escaping (User) -> (), failure: @escaping (NSError) -> ()){
+        get("1.1/account/verify_credentials.json", parameters: nil,progress: nil, success: {(task: URLSessionDataTask, response: Any?) -> Void in
+            // print("account: \(response)")
+            let userDictionary = response as! NSDictionary
+            
+            let user = User(dictionary: userDictionary)
+            success(user)
+            
+        }, failure: {( task: URLSessionDataTask?, error: Error) -> Void in
+            failure(error as NSError)
+        })
+    }
+
 }
