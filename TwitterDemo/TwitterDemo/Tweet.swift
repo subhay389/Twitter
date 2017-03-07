@@ -16,17 +16,21 @@ class Tweet: NSObject {
     var favoritesCount: Int = 0
     var userName: NSString?
     var photoUrl: NSString?
-    
+    var id_str: String?
     var retweetCountString: String = ""
     var favCount: Int = 0
     var favCountString: String = ""
     var retweetStatus: NSDictionary?
-    var reTweet: Bool?
-    var favTweet: Bool?
+    var reTweeted: Bool?
+    var favTweeted: Bool?
+    var screenName: String?
+    var userDictionary: NSDictionary?
     
     init(dictionary: NSDictionary){
+        let ss = dictionary["user"]
+        userDictionary = ss as! NSDictionary
         text = dictionary["text"] as? NSString
-        
+        id_str = dictionary["id_str"] as? String
         retweetCount = (dictionary["retweet_count"] as? Int) ?? 0
         favoritesCount  = (dictionary["favorite_count"] as? Int) ?? 0
         userName = (dictionary["user"] as? NSDictionary)?["name"] as? NSString
@@ -39,12 +43,13 @@ class Tweet: NSObject {
             timestamp = formatter.date(from: timestampString) as NSDate?
         }
         
+        screenName = (dictionary["user"] as? NSDictionary)?["screen_name"] as? NSString as String?
         
         favCount = (dictionary["favorite_count"] as? Int) ?? 0
         
         retweetStatus = dictionary["retweeted_status"] as? NSDictionary
-        reTweet = (dictionary["retweeted"] as? Bool) ?? true
-        favTweet = (dictionary["favorited"] as? Bool) ?? false
+        reTweeted = (dictionary["retweeted"] as? Bool) ?? true
+        favTweeted = (dictionary["favorited"] as? Bool) ?? false
         
         if let retweetStatus = retweetStatus {
             retweetCount = retweetStatus["retweet_count"] as? Int ?? 0

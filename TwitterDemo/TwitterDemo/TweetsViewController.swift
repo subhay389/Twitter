@@ -18,6 +18,10 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     }
     var tweets: [Tweet]!
     
+    @IBAction func newTweetButton(_ sender: Any) {
+        self.performSegue(withIdentifier: "newTweetSegue", sender: sender)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -36,6 +40,11 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
             print(error.localizedDescription)
         })
 
+    }
+    
+    @IBAction func imageOnTap(_ sender: Any) {
+        self.performSegue(withIdentifier: "profileViewSegue", sender: sender)
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -66,4 +75,40 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
 
         return cell
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "detailViewSegue"{
+            let cell = sender as! UITableViewCell
+            
+            let indexPath = tableView.indexPath(for: cell)
+            let tweet = tweets![(indexPath!.row)]
+            let detailViewController = segue.destination as! TweetDetailsViewController
+            
+            detailViewController.tweet = tweet
+        }
+        
+        if segue.identifier == "profileViewSegue" {
+            var indexPath: NSIndexPath!
+            
+            if let button = sender as? UIButton {
+                if let superview = button.superview {
+                    if let cell = superview.superview as? TweetCell {
+                        indexPath = tableView.indexPath(for: cell) as NSIndexPath!
+                    }
+                }
+            }
+            let tweet = self.tweets[indexPath.row]
+            
+            let profileViewControl = segue.destination as! ProfileViewController
+            
+            profileViewControl.user = User(dictionary: tweet.userDictionary!)
+            
+        }
+//        if segue.identifier == "newTweetSegue" {
+//            let controller = segue.destination as! NewTweetViewController
+//            
+//            print ("reply Segue")
+//        }
+    }
+    
 }
